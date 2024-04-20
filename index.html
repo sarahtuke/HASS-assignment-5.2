@@ -10,16 +10,31 @@
 
 
 <!-- Installs -->
-<script>
+    <!--GEE - Google Earth Engine 
+    <script>
     //require('dotenv').config();
 
     //GEE (Google Earth Engine)
 
-  //const apiKeyGEE = process.env.API_KEY-GEE; // Refers to Location of API Key 
-    const apiKeyGEE = config.API_KEYGEE;
-        //const ee = require('@google/earthengine');
+    //const apiKeyGEE = process.env.API_KEY-GEE; // Refers to Location of API Key 
+        const apiKeyGEE = config.API_KEYGEE;
+            //const ee = require('@google/earthengine');
+        </script> 
+    -->
 
-     </script> 
+    <!-- Vue.js: Nuxt-UU -->
+    <script>
+        //main.js - adding @nuxt/ui-pro as a depedency to projecy
+        import { NuxtUU } from '@nuxt/ui-pro';
+        Vue.use(NuxtUU);
+
+        //nuxt.config.js
+        export default defineNuxtConfig({
+            extends: ['@nuxt/ui-pro'],
+            modules: ['@nuxt/ui']
+        })
+    </script>
+
 
 
 <!-- Libaries Loaded -->
@@ -123,21 +138,35 @@
         margin: 50;
         }
 
+        .vue-button-01 {
+        background-color: green;
+        color: white;
+        border: none;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+
+
+
+
     </style>
 
 <!-- Background Style -->
     <body style="background-color: #081129;">
 
 <!-- Containers: where the maps and Graphs will take place
-    <div id="Mp1_Atlas" width="500" height="300" class="w3-center"></div> 
-    <svg id="Mp1_Atlas" width="1400" height="900" viewBox="0 0 1400 900" class="w3-center"></svg>
 -->
     <svg id="Mp1_Atlas"></svg>
+    <div id="Video" width="500" height="300"></div>
     <div id="Graphs" width="500" height="300"></div>
+
     
     <!--
-    <div id="Video" width="500" height="300"></div>
-
     <div id="Graphs" width="500" height="300"></div>
     <div id="Mp2_Coast" width="500" height="300"></div>
     -->
@@ -148,6 +177,11 @@
 
 <body>
 
+    <!--Vue.js: Nuxt-U - Button -->
+    <template>
+    <UButton color="white" variant="ghost">Button</UButton>
+    </template>
+    
     <!--JS Script-->
     <script>
     // -------------------------------------- Div 1:: id: Mp1_Atlas----------------------------------------------
@@ -197,21 +231,8 @@
                 
 
     //ToolTip 
-    /*
-        .on("mouseover", (event, d) => {
-            d3.select(".tooltip")
-            .text(d.properties.name)
-            .style("position", "absolute")
-            .style("background", "#fff")
-            .style("left", (event.pageX) + "px")
-            .style("top", (event.pageY) + "px");
-        })
-        .on("mouseout", (event, d) => {
-            d3.select(".tooltip")
-            .text("");
-        })
-        */
-
+    // Define the div for the tooltip
+    
         // Event handlers: update tooltip relative to mouse pointer
         //turning on the mouuse-over fucntion
         .on("mouseover", (event, d) => {
@@ -226,8 +247,8 @@
 
 
         //making the mouse-over function link to the tooltip
-        //d3.select(".tooltip")
-        tooltip.style("opacity", 1)
+               let tooltip_Mp1_Atlas = d3.select(".tooltip");
+        tooltip_Mp1_Atlas.style("opacity", 1)
             .html(`<strong>${d.properties.name}</strong>`)
             .style("display", "block")
             .style("left", event.pageX + 60 + "px")
@@ -264,12 +285,46 @@
             //end of data access
             })
 
+        //end of script
         </script>
 
     <!-- <h2 class="w3-center">--&nbsp;*&nbsp;--</h2> -->
         <!-------------------------------------------Div 2:: id: Video------------------------------------------------> 
 
     <h2 class="w3-center">--&nbsp;*&nbsp;--</h2>
+
+   <script>
+    //dimensions
+        let d2_width = 1000, d2_height = 600;
+    
+    // Video
+        let video = d3.select("#Video")
+            .append("video")
+            .attr("width", 500)
+            .attr("height", 300)
+            .attr("controls", true)
+            .attr("autoplay", true)
+            .append("source")
+            .attr("src", "https://www.youtube.com/watch?v=Brmfwu2e7OI&ab_channel=TheTravelIntern")
+            .attr("type", "video/mp4")
+
+    //Enter button to play video - Vue Button
+        // Vue instance
+        //vue-button-01
+        // Vue instance
+        new Vue({
+            el: '#Video',
+            components: {
+                'u-button': UButton
+                }
+                });
+
+
+         <div id="Video">
+            <u-button color="green" variant="ghost">Button</u-button>
+            </div>
+
+    </script>
 
         <!-------------------------------------------Div 3:: id: Graphs-------------------------------------------------> 
 
