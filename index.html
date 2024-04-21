@@ -167,12 +167,14 @@
 
 <!-- Containers: where the maps and Graphs will take place
 -->
-    <svg id="Mp1_Atlas"></svg>
+    
+    <div id="Mp1_Atlas" style="width: 100%; height: 800px;" class="w3-center"></div>
     <div id="Video" width="500" height="300"></div>
     <div id="Graphs" width="500" height="300"></div>
 
     
     <!--
+    <svg id="Mp1_Atlas"></svg>
     <div id="Graphs" width="500" height="300"></div>
     <div id="Mp2_Coast" width="500" height="300"></div>
     -->
@@ -204,14 +206,95 @@
     // Map and projection
     let projection = d3.geoMercator()
         //d3.geoEquirectangular()
-            .center([1.357868, 103.810847]) //Center to Singapore
-            .center([105, -5]) // Rough central point for Southeast Asia
+            //.center([1.357868, 103.810847]) //Center to Singapore
+            .center([10, 113], 4.5) // Rough central point for Southeast Asia
             .scale(700)
             .translate([(width/2)-150, (height/2)+125])
 
     let geopath = d3.geoPath().projection(projection);
 
-    /* Create the map
+
+    //Create the map with leaflet
+    //var map = L.map('Mp1_Atlas').setView([1.357868, 103.810847], 13); //centered on Singapore
+    //var map = L.map('Mp1_Atlas').setView([1, 113], 5); //rough central point for Southeast Asia
+
+    // Create the map zoom bounds
+    var map = L.map('Mp1_Atlas', {
+        minZoom: 4.5,
+        maxZoom: 4.5,	
+        //maxBounds: [[-90, -180], [90, 180]], // This line restricts the view to the whole world
+        maxBounds: [[20, 80], [0, 150]], // This line restricts the view just around Southeast Asia
+        maxBoundsViscosity: 1.0, //adds that lil bounce back effect
+    }).setView([10, 113], 4.5);
+
+    // Add a tile layer to the map (this is the actual map imagery)
+    //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+        //charcaol themed map
+        // Add a dark tile layer to the map
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors, © CARTO',
+            maxZoom: 19,
+        }).addTo(map);
+ 
+    /* 
+    // Load the CSV data
+     d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_extent_2000__ha.csv').then((csvData) => {
+        // Convert the CSV data to a map for easier lookup
+        const countryData = new Map(csvData.map(row => [row.COUNTRY, row]));
+        */
+
+        // Load the GeoJSON data
+        fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson')
+            .then(response => response.json())
+       
+            .then(MapData => {
+                          
+
+            // Filter to include only Southeast Asian countries
+            //data.features = data.features.filter(function(d) {console.log(d.properties.name);
+            MapData.features = MapData.features.filter(function(d) {   
+                return ["Indonesia", "Malaysia", "Philippines", "Singapore", "Thailand", 
+                        "Brunei", "Vietnam", "Laos", "Myanmar", "Cambodia"]
+                    .includes(d.properties.name);
+
+            });
+                
+                // Add the GeoJSON layer to the map
+                L.geoJSON(MapData, {
+                    onEachFeature: function (feature, layer) {
+                        console.log(feature.properties);
+                        
+                        // Get the data for this country
+                        //const country = MapData.get(feature.properties.name);
+                        const country = feature.properties;
+
+                        // Calculate the percentage of the country covered by trees
+                        const treeCoverPercentage = Math.round((country.gwf_umd_tree_cover_extent_2000__ha / country.gwf_area__ha) * 100);
+
+                        // Format the values
+                        const treeCover = Math.round(country.gwf_umd_tree_cover_extent_2000__ha).toLocaleString();
+                        const area = Math.round(country.gwf_area__ha).toLocaleString();
+
+
+                        // Bind a popup to each feature
+                        layer.bindPopup(`
+                           This is <strong>${country.name}</strong> <br><br>
+                            <em>Looking back at back at 2020</em><br>
+                            Total Country Area Size was <strong>${area} ha</strong><br>
+                            of which<strong> ${treeCoverPercentage}%</strong> had forest coverage`);
+                            
+                    }
+                }).addTo(map);
+            });
+
+    
+
+
+
+
+
+    /* Create the map with leaflet
     //var map = L.map('Mp1_Atlas').setView([1.357868, 103.810847], 13);
     var map = L.map('Mp1_Atlas').setView([0,0], 1);
 
@@ -332,7 +415,7 @@
 
 */
 
-    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
+    /*d3.json("https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson").then(data => {
 
         // Filter to include only Southeast Asian countries
         //data.features = data.features.filter(function(d) {console.log(d.properties.name);
@@ -411,7 +494,7 @@
     
             //end of data access
             })
-            
+        */  
 
         //end of script
         </script>
