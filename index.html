@@ -138,10 +138,22 @@
 
         a {
         color: black;
-    }
+        }
 
-        body {
-        margin: 50;
+        #body_txt {/* or #ctch_text if it's an id */
+        margin: 10px;
+        font-family: poppins;
+        background-color: #081129;
+        color: white;
+        font-size: 30px;
+        }
+
+        
+        #catch_txt {/* or #ctch_text if it's an id */
+        margin: 20px;
+        font-family: poppins;
+        color: #0b3f1e;
+        font-size: 50px;
         }
 
         .vue-button-01 {
@@ -155,6 +167,8 @@
         font-size: 16px;
         margin: 4px 2px;
         cursor: pointer;
+
+
     }
 
 
@@ -169,12 +183,13 @@
 -->
     
     <div id="Mp1_Atlas" style="width: 100%; height: 800px;" class="w3-center"></div>
-    <div id="Video" width="500" height="300"></div>
-    <div id="Graphs" width="500" height="300"></div>
+   
+    <div id="Dv2_TropicalForests" width="500" height="300"></div>
 
     
     <!--
     <svg id="Mp1_Atlas"></svg>
+    <div id="Video" width="500" height="300"></div>
     <div id="Graphs" width="500" height="300"></div>
     <div id="Mp2_Coast" width="500" height="300"></div>
     -->
@@ -530,7 +545,7 @@ legend.addTo(map);
     </script>
 
   
-         <!-- -----------------------------------------Div 2:: id: Video-----------------------------------------------
+         <!-- -----------------------------------------Div -:: id: Video-----------------------------------------------
 <h2 class="w3-center">--&nbsp;*&nbsp;--</h2> 
 
     <h2 class="w3-center">--&nbsp;*&nbsp;--</h2>
@@ -570,17 +585,44 @@ legend.addTo(map);
 
 -->
 
-        <!-------------------------------------------Div 3:: id: Graphs-------------------------------------------------> 
+        <!-------------------------------------------Dv2_TropicalForests-------------------------------------------------> 
 
-   <!-- <svg width="1000" height="2000" xmlns="http://www.w3.org/2000/svg"  class="w3-center">      </svg> -->
-        <rect width="900" height="3200" x="10" y="10" rx="20" ry="20" fill="#354b79" class="w3-center"/>
+        <!--Text-->
+        <Script>
+        
+        fetc
+        var netDeforestation_SEA = 0.5;
+        
+        </Script>
+        <div >
+            <body_txt>
+                
 
-            <div class="w3-center" style="position: relative;">
-               <!--
-                <img src="Image Examples_Graphs .png" alt="LA" style="width:50%; opacity: 0.8;">
-               -->
-            
-            </div>
+                <p id="body_txt">In the 2 decades between 2000 and 2020, Southease Asia lost X% of its foests</p>
+                <br>
+                <br>
+                <p id="body_txt">So why does this matter?</p>
+                <p id="body_txt">Tropical forests are home to a wide variety of plant and animal species. They are also important for the global climate system, as they store large amounts of carbon and help regulate the Earth's temperature. However, tropical forests are under threat from deforestation, which is driven by factors such as agriculture, logging, and mining. Protecting tropical forests is essential for biodiversity conservation and climate change mitigation.</p>
+
+            </body_txt>
+        </div>
+        
+        <script>
+   
+        //dimensions
+        let width_dv2 = 1000, height_dv2 = 600;
+    
+        let svgA_dv2 = d3.select("#Mp1_Atlas")
+            .attr("viewBox", "0 0 " + width+ " " + height)
+            .attr("width", 1400)
+            .attr("height", 900)
+
+
+
+
+        
+        //end of script for Div 2
+        </script>
    
 
     <h2 class="w3-center">--&nbsp;*&nbsp;--</h2>
