@@ -40,6 +40,7 @@
 <!-- Libaries Loaded -->
     <!-- D3 -->
     <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script> 
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
@@ -49,6 +50,10 @@
 
     <!-- GEE -->
     <script src="C:\Users\sarah\node_modules\@google\earthengine\src"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <!-- API's Integrated -->
 
@@ -206,8 +211,9 @@
 
     let geopath = d3.geoPath().projection(projection);
 
-        // Create the map
-    var map = L.map('map').setView([1.357868, 103.810847], 13);
+    /* Create the map
+    //var map = L.map('Mp1_Atlas').setView([1.357868, 103.810847], 13);
+    var map = L.map('Mp1_Atlas').setView([0,0], 1);
 
     // Add a tile layer to the map (this is the actual map imagery)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -222,7 +228,11 @@
         // Load the GeoJSON data
         fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
             .then(response => response.json())
+       
+
             .then(data => {
+                console.log(data);
+                
                 // Add the GeoJSON layer to the map
                 L.geoJSON(data, {
                     onEachFeature: function (feature, layer) {
@@ -239,7 +249,7 @@
                 }).addTo(map);
             });
     });
-
+    */
     /* Load the GeoJSON data
 
     //load the GeoJson and set teh code to no-cors to bypass CORS Policy 
@@ -322,7 +332,7 @@
 
 */
 
-    /*d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
+    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
 
         // Filter to include only Southeast Asian countries
         //data.features = data.features.filter(function(d) {console.log(d.properties.name);
@@ -334,8 +344,6 @@
         });
    
                     
-     
-
         // Draw the map
         svgAtlas.append("g")
             .attr("id", "countries")
@@ -348,7 +356,7 @@
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 0.5)
                 
-/
+
     //ToolTip 
     // Define the div for the tooltip
 
@@ -403,7 +411,7 @@
     
             //end of data access
             })
-            */
+            
 
         //end of script
         </script>
