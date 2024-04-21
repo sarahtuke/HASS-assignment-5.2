@@ -273,15 +273,23 @@
                         const treeCoverPercentage = Math.round((country.gwf_umd_tree_cover_extent_2000__ha / country.gwf_area__ha) * 100);
 
                         // Format the values
-                        const treeCover = Math.round(country.gwf_umd_tree_cover_extent_2000__ha).toLocaleString();
-                        const area = Math.round(country.gwf_area__ha).toLocaleString();
+                        //in ha (hectars)
+                        //const treeCover = Math.round(country.gwf_umd_tree_cover_extent_2000__ha).toLocaleString();
+                        //const area = Math.round(country.gwf_area__ha).toLocaleString();
+                        //in Mha (million hectars)
+
+                        // Format the values
+                        // Convert the values to million hectares (Mha)
+                        const treeCoverMha = (country.gwf_umd_tree_cover_extent_2000__ha / 1000000).toFixed(0);
+                        const areaMha = (country.gwf_area__ha / 1000000).toFixed(0);
+
 
 
                         // Bind a popup to each feature
                         layer.bindPopup(`
                            This is <strong>${country.name}</strong> <br><br>
-                            <em>Looking back at back at 2020</em><br>
-                            Total Country Area Size was <strong>${area} ha</strong><br>
+                            <em>Looking back at 2020:</em><br>
+                            Total Country Area Size was <strong>${areaMha} Mha</strong><br>
                             of which<strong> ${treeCoverPercentage}%</strong> had forest coverage`);
                             
                     }
