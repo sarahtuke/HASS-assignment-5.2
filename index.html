@@ -289,6 +289,35 @@ fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data
                     of which<strong> ${feature.properties.treeCoverPercentage}%</strong> had forest coverage`);
             }
         }).addTo(map);
+
+        // Create a legend
+        var legend = L.control({position: 'bottomleft'});
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 20, 40, 60, 80, 100], // These are the breakpoints for the colors in the legend
+                labels = ['<strong>Density of Forest Coverage (%)</Strong>'];	// This is the title of the legend
+
+                 // Set the color of the text to white
+                div.style.color = '#bebebe';
+
+                // Add the title to the legend
+                div.innerHTML = labels[0] + '<br>';
+                
+
+            // Loop through our intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                '<i style="background:' + color(grades[i] + 1) + '; width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7;"></i> '
+                + grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '%<br>' : '+%');
+            }
+
+    return div;
+};
+
+// Add the legend to the map
+legend.addTo(map);
     });
 
     
