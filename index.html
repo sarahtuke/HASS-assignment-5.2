@@ -52,7 +52,7 @@
 
 <!-- API's Integrated -->
 
-    <!-- GEE (Google Earth Engine) -->
+    <!-- GEE (Google Earth Engine) 
     <script>
         // Integration after Library Loaded
         ee.data.authenticateViaApiKey(apiKeyGEE, () => {
@@ -67,6 +67,7 @@
           console.error('GEE Authentication error: ' + err);
         });
       </script>
+      -->
  
 
 
@@ -191,25 +192,135 @@
 
     let svgAtlas = d3.select("#Mp1_Atlas")
         .attr("viewBox", "0 0 " + width+ " " + height)
-        //.attr("width", 1400)
-        //.attr("height", 900)
+        .attr("width", 1400)
+        .attr("height", 900)
         
 
     // Map and projection
     let projection = d3.geoMercator()
         //d3.geoEquirectangular()
-            //.center([1.357868, 103.810847]) //Center to Singapore
+            .center([1.357868, 103.810847]) //Center to Singapore
             .center([105, -5]) // Rough central point for Southeast Asia
             .scale(700)
             .translate([(width/2)-150, (height/2)+125])
 
     let geopath = d3.geoPath().projection(projection);
 
-    // Load GeoJSON data
-    d3.json("sea_simp02.geojson")
-    //using the data from the geojson file I want to create a pull the name of each country in t
+        // Create the map
+    var map = L.map('map').setView([1.357868, 103.810847], 13);
+
+    // Add a tile layer to the map (this is the actual map imagery)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    // Load the CSV data
+    d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_extent_2000__ha.csv').then((csvData) => {
+        // Convert the CSV data to a map for easier lookup
+        const countryData = new Map(csvData.map(row => [row.COUNTRY, row]));
+
+        // Load the GeoJSON data
+        fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+            .then(response => response.json())
+            .then(data => {
+                // Add the GeoJSON layer to the map
+                L.geoJSON(data, {
+                    onEachFeature: function (feature, layer) {
+                        // Get the data for this country
+                        const country = countryData.get(feature.properties.COUNTRY);
+
+                        // Bind a popup to each feature
+                        layer.bindPopup(`
+                            <strong>Country:</strong> ${country.COUNTRY}<br>
+                            <strong>Total Tree Cover:</strong> ${country.gtw_treeCover_yr200_ha} ha<br>
+                            <strong>Total Country Area:</strong> ${country.gtw_area_yr2000_ha} ha
+                        `);
+                    }
+                }).addTo(map);
+            });
+    });
+
+    /* Load the GeoJSON data
+
+    //load the GeoJson and set teh code to no-cors to bypass CORS Policy 
+    fetch("https://github.com/sarahtuke/HASS-assignment-5.2/raw/main/data%20src/sea_geo/sea_simp02.geojson", { mode: 'no-cors' })
+        .then(response => response.json())
+        .then(geojsonData => {
+            
+            d3.json("https://github.com/sarahtuke/HASS-assignment-5.2/raw/main/data%20src/sea_geo/sea_simp02.geojson").then((geojsonData) => {
+        // Create an object to store the aggregated data for each country
+        const countryData = {};
+
+    // Iterate through each feature in the GeoJSON data
+    geojsonData.features.forEach((feature) => {
+        const country = feature.properties.COUNTRY; // Get the country name
+        const treeCover = parseFloat(feature.properties.gtw_treeCover_yr200_ha); // Get the tree cover extent
+        const countryArea = parseFloat(feature.properties.gtw_area_yr2000_ha); // Get the country area
+
+        // If the country is already in the countryData object, add to its existing values
+        if (countryData[country]) {
+            countryData[country].treeCover += treeCover;
+            countryData[country].countryArea += countryArea;
+        } else {
+            // Otherwise, create a new entry for the country
+            countryData[country] = {
+                treeCover: treeCover,
+                 countryArea: countryArea
+            };
+        }
+    });
+
+        })
+        .catch(error => {
+            console.error("Error loading GeoJSON:", error);
+        });
 
 
+
+
+
+    // Append the GeoJSON features to the SVG
+    svg.selectAll("path")
+        .data(geojsonData.features)
+        .enter()
+        .append("path")
+        .attr("d", path) // Set the path data
+        .style("fill", "lightgray") // Set the fill color for countries
+        .style("stroke", "black") // Set the stroke for country borders
+        .on("mouseover", function(event, d) {
+            const country = d.properties.COUNTRY;
+            const treeCover = countryData[country].treeCover;
+            const countryArea = countryData[country].countryArea;
+
+            // Create a tooltip
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("background", "white")
+                .style("border", "1px solid black")
+                .style("padding", "5px")
+                .style("visibility", "hidden");
+
+            tooltip.html(
+                `<strong>Country:</strong> ${country}<br>` +
+                `<strong>Total Tree Cover:</strong> ${treeCover.toFixed(2)} ha<br>` +
+                `<strong>Total Country Area:</strong> ${countryArea.toFixed(2)} ha`
+            );
+
+            tooltip.style("visibility", "visible");
+        })
+        .on("mousemove", function(event) {
+            // Update tooltip position
+            d3.select(".tooltip").style("top", (event.pageY + 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+            // Hide and remove the tooltip
+            d3.select(".tooltip").style("visibility", "hidden").remove();
+        });
+});
+
+*/
 
     /*d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
 
@@ -221,7 +332,7 @@
                     .includes(d.properties.name);
         
         });
-    */
+   
                     
      
 
@@ -237,7 +348,7 @@
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 0.5)
                 
-
+/
     //ToolTip 
     // Define the div for the tooltip
 
@@ -292,6 +403,7 @@
     
             //end of data access
             })
+            */
 
         //end of script
         </script>
@@ -340,7 +452,9 @@
         <rect width="900" height="3200" x="10" y="10" rx="20" ry="20" fill="#354b79" class="w3-center"/>
 
             <div class="w3-center" style="position: relative;">
+               <!--
                 <img src="Image Examples_Graphs .png" alt="LA" style="width:50%; opacity: 0.8;">
+               -->
             
             </div>
    
@@ -350,7 +464,9 @@
         <!-------------------------------------------Div 4:: id: Mp2_Coast-----------------------------------------------> 
            
         <div class="w3-center" style="position: relative;">
-                <img src="Image Examples_SVG Maps .png" alt="LA" style="width: 50%; opacity: 0.8;">
+                <!--
+                    <img src="Image Examples_SVG Maps .png" alt="LA" style="width: 50%; opacity: 0.8;">
+                -->
             
             </div>
         
