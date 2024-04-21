@@ -262,7 +262,7 @@
         // Load the GeoJSON data
 fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson')
     .then(response => response.json())
-    .then(MapData => {
+    .then( MapData => {
         // Filter to include only Southeast Asian countries
         MapData.features = MapData.features.filter(function(d) {   
             return ["Indonesia", "Malaysia", "Philippines", "Singapore", "Thailand", 
@@ -333,7 +333,7 @@ fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data
 
 // Add the legend to the map
 legend.addTo(map);
-    });
+   
 
     
         //previous attempts
@@ -542,58 +542,101 @@ legend.addTo(map);
             */  
 
     //end of script for Div 1
-    </script>
-
   
-         <!-- -----------------------------------------Div -:: id: Video-----------------------------------------------
-<h2 class="w3-center">--&nbsp;*&nbsp;--</h2> 
 
-    <h2 class="w3-center">--&nbsp;*&nbsp;--</h2>
+//          -------------------------------------------Dv2_TropicalForests------------------------------------------------
 
-   <script>
-    //dimensions
-        let d2_width = 1000, d2_height = 600;
+      //  <!-- Calculations -->
+     
+      // Load the CSV data
+    d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_loss_in_primary_forests_2001_tropics_only__ha.csv')
+    .then(csvData => {
+    // Filter the data to include only Southeast Asian countries
+    //const seAsiaData = csvData.filter(row => {
+        //return MapData.features.some(feature => feature.properties.Id === row.iso); //OG code
+        //return row.iso !== 'SGP' && MapData.features.some(feature => feature.properties.Id === row.iso); //Trying to exclude Singapore
     
-    // Video
-        let video = d3.select("#Video")
-            .append("video")
-            .attr("width", 500)
-            .attr("height", 300)
-            .attr("controls", true)
-            .attr("autoplay", true)
-            .append("source")
-            .attr("src", "https://www.youtube.com/watch?v=Brmfwu2e7OI&ab_channel=TheTravelIntern")
-            .attr("type", "video/mp4")
+    // Define an array of Southeast Asian ISO codes
+    const seAsiaISOs = ['KHM', 'SGP', 'THA', 'MMR', 'LAO', 'VNM', 'IDN', 'MYS', 'PHL', 'TLS'];
 
-    //Enter button to play video - Vue Button
-        // Vue instance
-        //vue-button-01
-        // Vue instance
-        new Vue({
-            el: '#Video',
-            components: {
-                'u-button': UButton
-                }
-                });
+    // Filter the CSV data to include only the countries with the specified ISO codes
+    const seAsiaData = csvData.filter(row => seAsiaISOs.includes(row.iso));
+    console.log(seAsiaData);
+    
+   
 
+    // Group the data by year
+    const groupedData = d3.group(seAsiaData, d => d.umd_tree_cover_loss__year);
+    console.log(groupedData);
 
-         <div id="Video">
-            <u-button color="green" variant="ghost">Button</u-button>
-            </div>
-
-    </script>
-
--->
-
-        <!-------------------------------------------Dv2_TropicalForests-------------------------------------------------> 
-
-        <!--Text-->
-        <Script>
+    /*
+    // Calculate the total tree cover loss for each year
+    const totalLossByYear = Array.from(groupedData, ([year, data]) => ({ 
+        year: year,
+        //totalLoss: d3.sum(data.map(d => +d.umd_tree_cover_loss_ha))
+        totalLoss: d3.sum(data.map(d => parseFloat(d.umd_tree_cover_loss_ha)))
         
-        fetc
-        var netDeforestation_SEA = 0.5;
+    }));
+    */
+
+   // Calculate the total tree cover loss for each year
+    const totalLossByYear = Array.from(groupedData, ([year, data]) => {
+
+    // Log the umd_tree_cover_loss_ha values before the conversion to numbers
+    console.log('Before conversion:', data.map(d => d.umd_tree_cover_loss_ha));
+
+    const totalLoss = d3.sum(data.map(d => {
+        // Convert the umd_tree_cover_loss_ha values to numbers
+        const loss = +d.umd_tree_cover_loss_ha;
+
+         // If loss is NaN, return 0
+    if (isNaN(loss)) {
+        console.log(`umd_tree_cover_loss_ha is "${d.umd_tree_cover_loss_ha}" for year ${d.umd_tree_cover_loss__year}`);
+        return 0;
+    }
+
+
+        // Log the umd_tree_cover_loss_ha values after the conversion to numbers
+        console.log('After conversion:', loss);
+
+        return loss;
+    }));
+
+    return {
+        year: year,
+        totalLoss: totalLoss
+    };
+});
+
+
+    console.log(totalLossByYear);
+
+    // Subtract the total tree cover loss in 2001 from the total tree cover loss in 2023 to get the net loss
+    const lossIn2023 = totalLossByYear.find(d => d.year === '2023');
+    const lossIn2001 = totalLossByYear.find(d => d.year === '2001');
+    
+
+    if (lossIn2023 && lossIn2001) {
+        const netLoss = lossIn2023.totalLoss - lossIn2001.totalLoss;
+
+        // Calculate the percentage of the net loss
+        const netLossPercentage = (netLoss / lossIn2001.totalLoss) * 100;
+
+        console.log(`Net loss from 2001 to 2023: ${netLoss}`);
+        console.log(`Net loss percentage: ${netLossPercentage}%`);
+    } else {
+        console.log('Data for 2023 or 2001 is not available');
+    }
+    //end of fetch treecover_loss_in_primary_forests_2001_tropics_only__ha.csv
+    });
+
+        //end of fetch world_forests.geoJson
+    });
+
         
         </Script>
+
+         <!-- Text -->
         <div >
             <body_txt>
                 
@@ -602,7 +645,18 @@ legend.addTo(map);
                 <br>
                 <br>
                 <p id="body_txt">So why does this matter?</p>
-                <p id="body_txt">Tropical forests are home to a wide variety of plant and animal species. They are also important for the global climate system, as they store large amounts of carbon and help regulate the Earth's temperature. However, tropical forests are under threat from deforestation, which is driven by factors such as agriculture, logging, and mining. Protecting tropical forests is essential for biodiversity conservation and climate change mitigation.</p>
+                <br>
+                <br>
+                <p id="body_txt">Tropical forests are home to a wide variety of plant and animal species. 
+                    They are also important for the global climate system, as they store large amounts of carbon 
+                    and help regulate the Earth's temperature. However, tropical forests are under threat from deforestation, 
+                    which is driven by factors such as agriculture, logging, and mining. Protecting tropical forests is essential
+                     for biodiversity conservation and climate change mitigation.</p>
+                <br>
+                <br>
+                <p id="body_txt">Between 2021 and 2020, Southeast Asia saw net emissions of:</p>
+                <br>
+                <p id="catch_txt">`${netLossPercentage}%`<br></p>
 
             </body_txt>
         </div>
@@ -621,7 +675,7 @@ legend.addTo(map);
 
 
         
-        //end of script for Div 2
+//  --------------------------------------- end of script for Div 2 --------------------------------------------
         </script>
    
 
