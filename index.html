@@ -206,7 +206,12 @@
     let geopath = d3.geoPath().projection(projection);
 
     // Load GeoJSON data
-    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
+    d3.json("sea_simp02.geojson")
+    //using the data from the geojson file I want to create a pull the name of each country in t
+
+
+
+    /*d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(data => {
 
         // Filter to include only Southeast Asian countries
         //data.features = data.features.filter(function(d) {console.log(d.properties.name);
@@ -214,8 +219,11 @@
             return ["Indonesia", "Malaysia", "Philippines", "Singapore", "Thailand", 
                     "Brunei", "Vietnam", "Laos", "Myanmar", "Cambodia"]
                     .includes(d.properties.name);
-                    
+        
         });
+    */
+                    
+     
 
         // Draw the map
         svgAtlas.append("g")
@@ -232,7 +240,7 @@
 
     //ToolTip 
     // Define the div for the tooltip
-    
+
         // Event handlers: update tooltip relative to mouse pointer
         //turning on the mouuse-over fucntion
         .on("mouseover", (event, d) => {
