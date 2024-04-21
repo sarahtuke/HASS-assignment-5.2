@@ -145,7 +145,7 @@
         font-family: poppins;
         background-color: #081129;
         color: white;
-        font-size: 30px;
+        font-size: 15px;
         }
 
         
@@ -153,7 +153,7 @@
         margin: 20px;
         font-family: poppins;
         color: #0b3f1e;
-        font-size: 50px;
+        font-size: 30px;
         }
 
         .vue-button-01 {
@@ -182,12 +182,15 @@
 <!-- Containers: where the maps and Graphs will take place
 -->
     
-    <div id="Mp1_Atlas" style="width: 100%; height: 800px;" class="w3-center"></div>
-   
-    <div id="Dv2_TropicalForests" width="500" height="300"></div>
+    <div id="Mp1_Atlas" style="width: 100%; height: 800px;" class="w3-center" position = "absolute"></div>
+    <div style="clear:both;"></div>
+    <div id="Dv2_TropicalForests" style="height: 800px; position: absolute; margin:auto"></div>
+    
 
     
     <!--
+    <div id="Dv2_TropicalForests" width="80%" height="1000" position = "absolute" ></div>
+
     <svg id="Mp1_Atlas"></svg>
     <div id="Video" width="500" height="300"></div>
     <div id="Graphs" width="500" height="300"></div>
@@ -551,7 +554,39 @@ legend.addTo(map);
       // Load the CSV data
     d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_loss_in_primary_forests_2001_tropics_only__ha.csv')
     .then(csvData => {
-    // Filter the data to include only Southeast Asian countries
+
+        const seAsiaData = csvData.filter(row => {
+            return ['KHM', 'SGP', 'THA', 'MMR', 'LAO', 'VNM', 'IDN', 'MYS', 'PHL', 'TLS'].includes(row.iso);
+        });
+
+        // Group the data by year
+        const groupedData = seAsiaData.reduce((acc, row) => {
+            const year = row.umd_tree_cover_loss__year;
+            if (!acc[year]) {
+                acc[year] = [];
+            }
+            acc[year].push(row);
+            return acc;
+        }, {});
+
+        // Calculate the total tree cover loss for each year
+        const totalLossByYear = Object.entries(groupedData).map(([year, data]) => {
+    console.log('Before conversion:', data.map(d => d.umd_tree_cover_loss_ha));
+    const totalLoss = d3.sum(data, d => {
+        const loss = +d.umd_tree_cover_loss_ha;
+        console.log('After conversion:', loss);
+        return loss;
+    });
+    return {
+        year: year,
+        totalLoss: totalLoss
+            };
+        });
+
+        console.log(totalLossByYear);
+
+    
+    /*    // Filter the data to include only Southeast Asian countries
     //const seAsiaData = csvData.filter(row => {
         //return MapData.features.some(feature => feature.properties.Id === row.iso); //OG code
         //return row.iso !== 'SGP' && MapData.features.some(feature => feature.properties.Id === row.iso); //Trying to exclude Singapore
@@ -561,7 +596,7 @@ legend.addTo(map);
 
     // Filter the CSV data to include only the countries with the specified ISO codes
     const seAsiaData = csvData.filter(row => seAsiaISOs.includes(row.iso));
-    console.log(seAsiaData);
+    //console.log(seAsiaData);
     
    
 
@@ -569,15 +604,15 @@ legend.addTo(map);
     const groupedData = d3.group(seAsiaData, d => d.umd_tree_cover_loss__year);
     console.log(groupedData);
 
-    /*
-    // Calculate the total tree cover loss for each year
-    const totalLossByYear = Array.from(groupedData, ([year, data]) => ({ 
-        year: year,
-        //totalLoss: d3.sum(data.map(d => +d.umd_tree_cover_loss_ha))
-        totalLoss: d3.sum(data.map(d => parseFloat(d.umd_tree_cover_loss_ha)))
+        /*
+        // Calculate the total tree cover loss for each year
+        const totalLossByYear = Array.from(groupedData, ([year, data]) => ({ 
+            year: year,
+            //totalLoss: d3.sum(data.map(d => +d.umd_tree_cover_loss_ha))
+            totalLoss: d3.sum(data.map(d => parseFloat(d.umd_tree_cover_loss_ha)))
+            
+        }));
         
-    }));
-    */
 
    // Calculate the total tree cover loss for each year
     const totalLossByYear = Array.from(groupedData, ([year, data]) => {
@@ -585,10 +620,13 @@ legend.addTo(map);
     // Log the umd_tree_cover_loss_ha values before the conversion to numbers
     console.log('Before conversion:', data.map(d => d.umd_tree_cover_loss_ha));
 
+ 
+
     const totalLoss = d3.sum(data.map(d => {
         // Convert the umd_tree_cover_loss_ha values to numbers
         const loss = +d.umd_tree_cover_loss_ha;
 
+    
          // If loss is NaN, return 0
     if (isNaN(loss)) {
         console.log(`umd_tree_cover_loss_ha is "${d.umd_tree_cover_loss_ha}" for year ${d.umd_tree_cover_loss__year}`);
@@ -603,9 +641,10 @@ legend.addTo(map);
     }));
 
     return {
-        year: year,
+        year: String(year),
         totalLoss: totalLoss
     };
+
 });
 
 
@@ -627,6 +666,9 @@ legend.addTo(map);
     } else {
         console.log('Data for 2023 or 2001 is not available');
     }
+    */
+
+
     //end of fetch treecover_loss_in_primary_forests_2001_tropics_only__ha.csv
     });
 
@@ -637,7 +679,7 @@ legend.addTo(map);
         </Script>
 
          <!-- Text -->
-        <div >
+        <div id="Dv2_TropicalForests_txtleft" style="display: flex; width: 500px; height: 200px; margin: 50px; text-justify: distribute-all-lines;">
             <body_txt>
                 
 
@@ -652,32 +694,195 @@ legend.addTo(map);
                     and help regulate the Earth's temperature. However, tropical forests are under threat from deforestation, 
                     which is driven by factors such as agriculture, logging, and mining. Protecting tropical forests is essential
                      for biodiversity conservation and climate change mitigation.</p>
+                
+        </div>
+        <div id="Dv2_TropicalForests_txtright" style="height: 200px; margin: 50px; text-align: right;">
                 <br>
                 <br>
-                <p id="body_txt">Between 2021 and 2020, Southeast Asia saw net emissions of:</p>
+                <p id="body_txt" class="w3-left">Between 2021 and 2020, Southeast Asia saw net emissions of:</p>
                 <br>
                 <p id="catch_txt">`${netLossPercentage}%`<br></p>
 
             </body_txt>
         </div>
         
-        <script>
-   
-        //dimensions
-        let width_dv2 = 1000, height_dv2 = 600;
-    
-        let svgA_dv2 = d3.select("#Mp1_Atlas")
-            .attr("viewBox", "0 0 " + width+ " " + height)
-            .attr("width", 1400)
-            .attr("height", 900)
+        
+        <div id="Dv2_TropicalForests_Map" style="width: 90%; height: 200px; margin: 50px auto;">
+            <!-- The SVG will be appended here -->
+        </div>
 
+        <script>
+  
+    let svg_dv2 = d3.select("#Dv2_TropicalForests_Map")
+    .append("svg")
+        //.attr("viewBox", "0 0 " + 1000 + " " + 1000)
+        .attr("width", 1400)
+        .attr("height", 900)
+
+    // Tropical Forests Graph 
+
+        // Load the data
+        Promise.all([
+            d3.json("https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson"),
+            d3.csv("https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/The%20World%20Bank/goal15.forestemissions.csv")
+        ]).then(function([geojson, csv]) {
+
+            // Create a projection and path generator
+            let projection = d3.geoMercator()
+                .center([103, 1])
+                .fitExtent([[20, 20], [980, 580]], geojson);
+
+          
+            let geopath = d3.geoPath().projection(projection);
+
+             // Draw the map
+             svg_dv2.append("g")
+                .attr("feature", "name")
+                .selectAll("path")
+                ///.data(geojson.features)
+                .data(geojson.features.filter(d => d.properties.name !== 'Antarctica')) // Filter out Antarctica
+                .enter()
+                .append("path")
+                .attr("d", geopath)
+                .attr("fill", "#777")
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 0.5);
+
+        //Bubbles
+            // Create a scale for the bubble size
+            let sizeScale = d3.scaleSqrt()
+                .domain(d3.extent(csv, row => +row.net))
+                .range([1, 2]);
+
+            // Bind the CSV data to circle elements
+            svg_dv2.selectAll("circle")
+                //.data(csv)
+                .data(csv.filter(d => +d.net > 10)) // Filter out countries with net emissions less than 10
+                .enter().append("circle")
+                .attr("cx", d => projection([+d.x, +d.y])[0])
+                .attr("cy", d => projection([+d.x, +d.y])[1])
+                .attr("r", d => sizeScale(+d.net))
+                .attr("fill", "red")
+                .attr("opacity", 0.4);
+
+               
+    });
+</script>
+
+
+   <!-- --------------------------------------- end of script for Div 3 -------------------------------------------- -->
+      
+   <div id="div3_deforestCommodity" style="width: 100%; height: 400px; display: flex; justify-content: space-around; margin-top: 300px;">
+                                <!-- ------------- svg appends here -------------------------- -->
+    </div>
+
+    <script>
+
+    // The Deforestation by commodity data
+        // Defining SVG Size
+        let svg = d3.select("#div3_deforestCommodity").append("svg")
+            .attr("viewBox", [-width / 2, -height / 2, width, height]);
+            //.attr("width", 900)
+            //.attr("height", 1400);
+
+        // Load the data
+            d3.csv("https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/The%20World%20Bank/goal15.drivers_cover_loss.csv").then(data => {
+            // Filter the data to include only the regions you're interested in
+            const regions = ["LCN", "SSF", "SAS"];
+            data = data.filter(d => regions.includes(d.region));
+
+            // Group the data by region and sum the shares for each driver
+            const dataByRegion = d3.group(data, d => d.region);
+
+            // Create a pie generator
+            const pie = d3.pie()
+                .value(d => d.share);
+
+            // Create an arc generator
+            const arc = d3.arc()
+                .innerRadius(50)
+                .outerRadius(Math.min(width, height) / 5 - 55);
+
+            
+
+            // Create a color scale
+            const color = d3.scaleOrdinal()
+                .domain(data.map(d => d.driver))
+                .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse());
+            
+            
+            /*
+            // Define the color scale
+            const color = d3.scaleSequential()
+                .domain(data.map(d => d.driver))
+                .interpolator(d3.interpolateRainbow); // Use a different color interpolator
+            
+            */
+
+            // For each region, bind the data to path elements and set their d attribute using the arc generator
+            dataByRegion.forEach((value, key) => {
+                const svg = d3.select("#div3_deforestCommodity").append("svg")
+                    .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+                svg.append("g")
+                    .attr("stroke", "white")
+                    .selectAll("path")
+                    .data(pie(value))
+                    .join("path")
+                    .attr("fill", d => color(d.data.driver))
+                    .attr("d", arc)
+                    .append("title")
+                    .text(d => `${d.data.driver}: ${d.data.share.toLocaleString()}`);
+           
+
+            var key = data.map(d =>d.region);
+
+           // Add a title above each pie chart
+            svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", 20)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("text-decoration", "underline")
+                .text(key);
+
+            svg.append("g")
+                .attr("stroke", "white")
+                .selectAll("path")
+                .data(pie(value))
+                .join("path")
+                .attr("fill", d => color(d.data.driver))
+                .attr("d", arc)
+                .append("title")
+                .text(d => `${d.data.driver}: ${d.data.share.toLocaleString()}`);  
+
+        });
+
+        // Add a legend
+            const legend = d3.select("#div3_deforestCommodity").append("div")
+                .attr("class", "legend")
+                .style("margin-top", "20px");
+
+            legend.selectAll("div")
+                .data(color.domain())
+                .enter().append("div")
+                .style("display", "flex")
+                .style("align-items", "center")
+                .style("margin-bottom", "10px")
+                .html(d => `<div style="width: 20px; height: 20px; background-color: ${color(d)}; margin-right: 10px;"></div> ${d}`);
+        
+        
+            });
+
+        </script>
 
 
 
         
-//  --------------------------------------- end of script for Div 2 --------------------------------------------
-        </script>
+
    
+
+<script></script>
 
     <h2 class="w3-center">--&nbsp;*&nbsp;--</h2>
 
