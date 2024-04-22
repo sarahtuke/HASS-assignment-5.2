@@ -42,8 +42,17 @@
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script> 
+
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+
+    <script src="https://d3.v7.js"></script>
+    <script src="https://d3-simple-slider.js"></script>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+
+<script> src="d3.min.js"</script>
 
     <!-- W3 -->
     <script src="https://www.w3schools.com/lib/w3.js"></script>
@@ -171,6 +180,12 @@
 
     }
 
+    #container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+}
+
 
 
 
@@ -185,9 +200,7 @@
     <div id="Mp1_Atlas" style="width: 100%; height: 800px;" class="w3-center" position = "absolute"></div>
     <div style="clear:both;"></div>
     <div id="Dv2_TropicalForests" style="height: 800px; position: absolute; margin:auto"></div>
-    
-
-    
+   
     <!--
     <div id="Dv2_TropicalForests" width="80%" height="1000" position = "absolute" ></div>
 
@@ -767,10 +780,13 @@ legend.addTo(map);
 
                
     });
+    /////////////////////////////////////////////end of script for Div 2
 </script>
 
 
-   <!-- --------------------------------------- end of script for Div 3 -------------------------------------------- -->
+
+
+      <!-- ------------------------------------ start of script for Div 3 -------------------------------------------- -->
       
    <div id="div3_deforestCommodity" style="width: 100%; height: 400px; display: flex; justify-content: space-around; margin-top: 300px;">
                                 <!-- ------------- svg appends here -------------------------- -->
@@ -819,7 +835,7 @@ legend.addTo(map);
             
             */
 
-            // For each region, bind the data to path elements and set their d attribute using the arc generator
+            // For each region, bind the data to path elements and set their attribute using the arc generator
             dataByRegion.forEach((value, key) => {
                 const svg = d3.select("#div3_deforestCommodity").append("svg")
                     .attr("viewBox", [-width / 2, -height / 2, width, height]);
@@ -873,35 +889,270 @@ legend.addTo(map);
         
         
             });
+  /////////////////////////////////////////////end of script for Div 3
+</script>
 
-        </script>
+<!-- <iframe src="https://ourworldindata.org/grapher/human-development-index?tab=chart&region=Asia&facet=none&country=KHM~SGP~THA~MMR~MYS~LAO~VNM~IDN~PHL~TLS~Very+high+human+development+%28UNDP%29" loading="lazy" style="width: 100%; height: 600px; border: 0px none;"></iframe>-->
 
 
+<!-- ------------------------------------ start of script for Div 4:HmanDev -------------------------------------------- -->
+   
+<!-- parent div -->
+<div style="display: flex; justify-content: space-between;">
 
+    <!-- child div -->
+        <div id="div4_HumanDev_Graph" style="width: 50%; margin: 100px; height: 400px; display: flex; justify-content: right; margin-top: 50px;">
         
+            <!-- ------------- Human Development Data: Embedd of https://ourworldindata.org/human-development-index  -------------------------- -->
+            <iframe src="https://ourworldindata.org/grapher/human-development-index?tab=chart&region=Asia&facet=none&country=KHM~SGP~THA~MMR~MYS~LAO~VNM~IDN~PHL~TLS~Very+high+human+development+%28UNDP%29" loading="lazy" style="width: 100%; height: 600px; border: 0px none;"></iframe>
+            <div style="background: rgba(128, 4, 4, 0.5); position: absolute; top: 0; left: 0; width: 60%; margin: 50px;"></div>
+
+        </div>
+
+    <!-- child div -->
+        <div id="div4_HumanDev_Text" style="Width: 50%; height: 200px; margin: 50px; text-align: left;">
+            <p id="body_txt">So why keep going? Why not do a hard pause on all industries devepending on deforesetation?
+                <br>
+                Well because it's not that simple. Deforestation in the region has contributed to
+            </p>
+            <br>
+            <br>
+            <p id="catch_txt">Development and economic Growth</p>
+            <br>
+            <br>
+            <p id="body_txt">To understadn thism lets look at the <strong>The Human Development Index (HDI).</strong><br>
+                HDI is a summary measure of average achievement in key dimensions of human development:
+                a long and healthy life, being knowledgeable and have a decent standard of living. The HDI is the geometric mean of normalized 
+                indices for each of the three dimensions.</p>
+        </div>
+</div>
+
+<!-- ------------------------------------ end of script for Div 4:HmanDev -------------------------------------------- -->
+
+
+<!-- ------------------------------------ start of script for Div 5:Sea_FrstandDev -------------------------------------------- -->
+   
+   <!--
+    <div id="Div5:Sea_FrstandDev" style="width: 100%; display: flex; justify-content: space-around; margin:50px; margin-top:  300px;">
+    <div id="Div5:Sea_FrstandDev" style="width: 100%; display: flex; justify-content: space-around; margin:50px; margin-top:  300px;">
+    -->
+        <div id="Div5_Sea_FrstandDev" style="width: 80%; display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 20px; justify-content: space-around; margin:50px; margin-top: 300px; margin-bottom: 300px;">
+        <!-- -------------------------------------- svgDv5 appends here -------------------------- -->
+             </div>
+
+    <script>
 
    
+        /* // The Sea Level Rise and Forest Stand Deviation data
+        // Defining SVG Size
+        let svgDv4 = d3.select("#Div5_Sea_FrstandDev").append("svg")
+            .attr("viewBox", [-width / 2, -height / 2, width, height]);
+            //.attr("width", 900)
+            //.attr("height", 1400);
 
-<script></script>
+        // Load the data
+            d3.csv("https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/The%20World%20Bank/goal15.drivers_cover_loss.csv").then(data => {
+            // Filter the data to include only the regions you're interested in
+            const regions = ["LCN", "SSF", "SAS"];
+            data = data.filter(d => regions.includes(d.region));
 
-    <h2 class="w3-center">--&nbsp;*&nbsp;--</h2>
+            // Group the data by region and sum the shares for each driver
+            const dataByRegion = d3.group(data, d => d.region);
 
-        <!-------------------------------------------Div 4:: id: Mp2_Coast-----------------------------------------------> 
-           
-        <div class="w3-center" style="position: relative;">
-                <!--
-                    <img src="Image Examples_SVG Maps .png" alt="LA" style="width: 50%; opacity: 0.8;">
-                -->
+            // Create a pie generator
+            const pie = d3.pie()
+                .value(d => d.share);
+
+            // Create an arc generator
+            const arc = d3.arc()
+                .innerRadius(50)
+                .outerRadius(Math.min(width, height) / 5 - 55);
+
             
-            </div>
+
+            // Create a color scale
+            const color = d3.scaleOrdinal()
+                .domain(data.map(d => d.driver))
+                .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse());
+            
+            
+            /*
+            // Define the color scale
+            const color = d3.scaleSequential()
+                .domain(data.map(d => d.driver))
+                .interpolator(d3.interpolateRainbow); // Use a different color interpolator
+            
         
-    
+
+            // For each region, bind the data to path elements and set their attribute using the arc generator
+            dataByRegion.forEach((value, key) => {
+                const svg = d3.select("#Div5_Sea_FrstandDev").append("svg")
+                    .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+                svg.append("g")
+                    .attr("stroke", "white")
+                    .selectAll("path")
+                    .data(pie(value))
+                    .join("path")
+                    .attr("fill", d => color(d.data.driver));
         
+            });
+            */
+
+        // Load the forest density and HDI data
+        Promise.all([
+            d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_loss_in_primary_forests_2001_tropics_only__ha.csv'),
+            d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/Our%20Wolrd%20Data_HUman%20Index/human-development-index.csv')
+        ]).then(([forestData, hdiData]) => {
+            
+            // Process the data
+            const forestDensityByCountryAndYear = d3.group(forestData, d => d.iso, d => d.umd_tree_cover_loss__year);
+            const hdiByCountryAndYear = d3.group(hdiData, d => d.Entity, d => d.Year);
+
+            // Create color scale for forest density
+            const forestDensityValues = forestData.map(d => +d.umd_tree_cover_loss__ha);
+            const colorScale = d3.scaleSequential(d3.interpolateGreens)
+                .domain(d3.extent(forestDensityValues));
+
+            //create container for button
+            const container = d3.select("#Div5_Sea_FrstandDev");
+
+            fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson')
+                .then(response => response.json())
+                .then(MapDataDv5 => {
+
+                    // Filter to include only Southeast Asian countries
+                    const countryDv5 = MapDataDv5.features.filter(function(d) {   
+                       return ["IDN", "MYS", "PHL", "THA", "BRN", "VNM", "LAO", "MMR", "KHM", "TLS", "SGP"]
+                                .includes(d.properties.id);
+
+                            });
+                    //console.log('Countries recognised:',d.properties.name);
+                    //console.log('Countries recognised:', MapDataDv5);
+                    //console.log('Countries recognised:', countryDv5);
+                    //console.log('Forest Data recognised:', forestData); 
+                    //console.log('Forest density by year recognised:', forestDensityByCountryAndYear);//returning undefined
+                    console.log('HDI Data recognised:', hdiData);
+                    //console.log('Forest density by year recognised:', hdiByCountryAndYear);
+                    console.log('hdiByCountryAndYear recognised:', hdiByCountryAndYear );
+                    
+                       
+                        /*
+                        return ["Indonesia", "Malaysia", "Philippines", "Thailand", 
+                                "Brunei", "Vietnam", "Laos", "Myanmar", "Cambodia"] //removing Singapore because the GeoJson does not have it
+                            .includes(d.properties.name);
+                            
+                            //.includes(d.feature.properties.name); 
+                    });
+                        */  
+                
+                    /*
+                    MapDataDv5.features.forEach(feature => {
+                    console.log('Country by feature properties:', feature.properties.name);
+                        });
+
+                    */
 
 
 
+                    // Create a SVG for each country
 
-</body>
+                    countryDv5.forEach((country, i) => {
+                        const svg = container.append("svg")
+                            .attr("width", 200)
+                            .attr("height", 200)
+                            .attr("id", country.properties.id.replace(/\s/g, "_"))  // Assign an id to the SVG
+                            .style("grid-column", (i % 4) + 1)
+                            .style("grid-row", Math.floor(i / 4) + 1);
+
+                            console.log('Country ID:', country.properties.id); 
+
+
+                    // Create a projection that fits the country within the SVG
+                    const projection = d3.geoMercator().fitSize([200, 200], country);
+                    const path = d3.geoPath().projection(projection);
+
+                    svg.append("path")
+                        .attr("d", path(country))
+                        .attr("fill", d => {
+                            console.log('Country:', country.properties.name);  // Add this line
+                            //console.log('Forest density map:', forestDensityByCountryAndYear);  // Add this line
+
+                            const forestDensity = forestDensityByCountryAndYear.get(country.properties.id)?.get('2000');
+                            return colorScale(forestDensity);
+                        })
+                        .attr("stroke", "black")
+                        .attr("stroke-width", 0.5)
+                        .attr("opacity", 0.8)
+                        .on("mouseover", function() {
+                            //console.log('Country:', country.properties.name);  // Add this line
+                            //console.log('HDI map:', hdiByCountryAndYear);  // Add this line
+
+                            const hdi = hdiByCountryAndYear.get(country.properties.name)?.get('2000');
+                            d3.select(this).append("title").text(`HDI: ${hdi}`);
+                        });
+
+                    // Append country name as a label under the SVG
+                    container.append("div")
+                        .text(country.properties.name)
+                        .style("grid-column", (i % 4) + 1)
+                        .style("grid-row", Math.floor(i / 4) + 1)
+                        .style("text-align", "center")
+                        .style("font-size", "10px")
+                        .style("color", "white");
+
+                    // Append an element for the HDI text
+                    svg.append("text")
+                        .attr("class", "hdi-text")
+                        .attr("x", 100)  // Adjust the x and y coordinates as needed
+                        .attr("y", 100);
+
+                    }); // Add this closing brace
+
+                
+                
+                    // Function to update the HDI text and forest density color
+                    function updateHDI(year) {
+                        countryDv5.forEach(country => {
+                            const hdi = hdiByCountryAndYear.get(country.properties.name)?.get(year);
+                            const forestDensity = forestDensityByCountryAndYear.get(country.properties.id)?.get('2000') || 0;
+                            const svg = d3.select(`#${country.properties.id.replace(/\s/g, "_")}`);
+                            svg.select(".hdi-text").text(`HDI: ${hdi}`);
+                            svg.select("path").attr("fill", colorScale(forestDensity));
+                        });
+                    }
+
+                    // Create a scale for the timeline
+                    //const years = hdiData.map(d => d.Year);
+                    const timelineScale = d3.scaleLinear()
+                        .domain(2000, 2020)  // Adjust the domain to match the years in your data
+                        .range([0, 200]);  // Adjust the range to match the width of your timeline
+
+
+                 const playButton = container.append("button");
+                     playButton.text("Play");
+
+                    // Start the transition when the play button is clicked
+                    playButton.node().addEventListener("click", () => {
+                        d3.selectAll("svg")
+                            .transition()
+                            .duration(10000)  // Adjust the duration as needed
+                            .ease(d3.easeLinear)
+                            .tween("year", () => {
+                                //const yearInterpolator = d3.interpolateRound(d3.min(years), d3.max(years));
+                                const yearInterpolator = d3.interpolateRound(2000, 2020);
+                                return t => updateHDI(String(yearInterpolator(t)));
+                            });
+                    });
+                });
+
+                //end of promise.all
+            });  
+                </script>
+
+<!-- ------------------------------------ end of script for Div 5:Sea_FrstandDev -------------------------------------------- -->
+                        <div>
+                            <h2>References</h2>
+                        </div>
+        </body>
 </html>
-
-
