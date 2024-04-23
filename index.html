@@ -191,6 +191,23 @@
     grid-gap: 10px;
 }
 
+#map {
+            
+            position: relative; /* Important for absolute positioning of child elements */
+        }
+
+        #text-overlay {
+            position: absolute; /* Absolute positioning to place it on the map */
+            top: 10px; /* Distance from the top */
+            right: 10px; /* Distance from the right */
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+            color: white; /* Text color */
+            padding: 10px; /* Padding around the text */
+            font-family: poppins; /* Font family */
+            border-radius: 5px; /* Rounded corners */
+            
+        }
+
 
 
 
@@ -226,8 +243,25 @@
     </template>
     
     <body>
-    <!--JS Script-->
+
+          <!-----Welcome Text -->
+
+        <div id="map"></div> <!-- The Leaflet map container -->
+        <div id="text-overlay">Overlay Text: Information Here</div> <!-- Your text over the map -->
+
+
+        <body>
+            <!-- Your HTML code -->
+            <div class="scrolling-text">
+            <p  style="color: #354b79;">Malay Archipelago &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Riau Archipelago &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Maritime Southeast Asia &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Indonesian Archipelago &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Nusantara &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;East Indies &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;</p>
+            </div>
+        </body>
+
+
+            
+    <!-----JS Script-->
     <script>
+
     // -------------------------------------- Div 1:: id: Mp1_Atlas----------------------------------------------
 
     //dimensions
@@ -237,6 +271,7 @@
         .attr("viewBox", "0 0 " + width+ " " + height)
         .attr("width", 1400)
         .attr("height", 900)
+     
         
 
     // Map and projection
@@ -786,11 +821,14 @@ legend.addTo(map);
                
     });
     /////////////////////////////////////////////end of script for Div 2
-</script>
+
+
+    </script>
+</body>
 
 
 
-
+<body>
       <!-- ------------------------------------ start of script for Div 3 -------------------------------------------- -->
       
    <div id="div3_deforestCommodity" style="width: 100%; height: 400px; display: flex; justify-content: space-around; margin-top: 300px;">
