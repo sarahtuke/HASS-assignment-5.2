@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tester</title>
+
+    <css>
+        <!-- Background Style -->
+        <body style="background-color: #081129;">
+    
+            
+    </css>
+
+
+
+<script src="https://d3.v7.js"></script>
+<script src="https://d3-simple-slider.js"></script>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://unpkg.com/d3-simple-slider"></script>
+
+<script> src="d3.min.js"</script>
+
+</head>
+ <!-- 
+<script>
+    import * as d3 from 'd3';
+    import { sliderBottom } from 'd3-simple-slider';
+</script>
+-->
+
+
+
+
+<div id="Div5_Sea_FrstandDev" style="width: 80%; display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 20px; justify-content: space-around; margin:50px; margin-top: 300px; margin-bottom: 50px;">
+    <!-- -------------------------------------- svgDv5 appends here -------------------------- -->
+         </div>
+<p id="value"></p>
+<div id="slider"></div>
+
+
+
+
+<script>
+
+
+    let forestLossData
+        d3.csv("https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_loss_in_primary_forests_2001_tropics_only__ha.csv")
+            .then(data => {
+                forestLossData = data.map(d => ({
+                    iso: d.iso,
+                    year_f: d.umd_tree_cover_loss__year,
+                    treeloss: +d.umd_tree_cover_loss__ha,
+                }));
+           
+      
+    
+        // Process the data
+        const forestLossByCountryAndYear = d3.group(forestLossData, d => d.iso, d => d.year_f, d => d.treeloss);
+
+       /* const forestLossByCountryAndYear = d3.rollup(forestLossData, 
+            v => d3.sum(v, leaf => leaf.treeloss),  // Sum the tree loss values for each group
+            d => d.iso,  // Group by country
+            d => d.year_f  // Then by year
+        );
+        */
+        
+        // Create color scale for forest density
+        const forestLossValues = data.map(d => d.treeloss);
+        const colorScale = d3.scaleSequential(d3.interpolateGreens)
+            .domain(d3.extent(forestLossValues));
+    
+        //create container for button
+        const container = d3.select("#Div5_Sea_FrstandDev");
+    
+        fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson')
+            .then(response => response.json())
+            .then(MapDataDv5 => {
+                // Filter to include only Southeast Asian countries
+                const countryDv5 = MapDataDv5.features.filter(function(d) {   
+                    return ["IDN", "MYS", "PHL", "THA", "BRN", "VNM", "LAO", "MMR", "KHM", "TLS", "SGP"]
+                                .includes(d.properties.id);
+                });
+
+                /*
+
+                    // function to update the SVGs
+                    function updateSVGs(year) {
+                        d3.selectAll("svg").selectAll("path")
+                            .attr("fill", d => {
+                                const forestDensity = forestDensityByCountryAndYear.get(country.properties.id)?.get(year);
+                                return colorScale(forestDensity);
+                            });
+                    }
+                */
+
+                // function to update the SVGs
+
+                    function updateSVGs(year) {
+                        d3.selectAll("svg").each(function() {
+                        const svg = d3.select(this);
+
+                    const countryId = svg.attr("id")?.replace(/_/g, " ");
+                        svg.selectAll("path")
+                            .attr("fill", d => {
+                                    //const forestLossData = forestLossByCountryAndYear.get(d.iso)?.get(d.umd_tree_cover_loss__year).get(d.umd_tree_cover_loss__ha);
+                                    //const forestDensity = forestLossByCountryAndYear.get(countryId)?.get(year);
+                                
+                                    //return colorScale(forestDensity);
+
+                                    //const forestLoss = forestLossByCountryAndYear.get(countryId)?.get(year);
+                                    //return colorScale(forestLoss);
+
+                                    const forestLoss = forestLossByCountryAndYear.get(countryId)?.treeloss;
+                                    return colorScale(forestLoss); 
+
+
+                                });
+                        });
+                    }
+    
+                // Create a SVG for each country
+                countryDv5.forEach((country, i) => {
+                    const svg = container.append("svg")
+                        .attr("width", 200)
+                        .attr("height", 200)
+                        .attr("fill", "gray")
+                        .attr("id", country.properties.id.replace(/\s/g, "_"))  // Assign an id to the SVG
+                        .style("grid-column", (i % 4) + 1)
+                        .style("grid-row", Math.floor(i / 4) + 1);
+    
+                    // Create a projection that fits the country within the SVG
+                    const projection = d3.geoMercator().fitSize([200, 200], country);
+                    const path = d3.geoPath().projection(projection);
+    
+                    svg.append("path")
+                        .attr("d", path(country))
+                        
+                        .attr("fill", d => {
+                            const forestLoss = forestLossByCountryAndYear.get(country.properties.id)?.get('2000');
+                            return colorScale(forestLoss);
+                            return forestLoss === undefined ? "white" : colorScale(forestLoss);
+                        })
+                        //.attr("stroke", "white")
+                        //.attr("stroke-width", 0.5)
+                        .attr("opacity", 0.8);
+
+           
+                    
+    
+                    // Append country name as a label under the SVG
+                    container.append("div")
+                        .text(country.properties.name)
+                        .style("grid-column", (i % 4) + 1)
+                        .style("grid-row", Math.floor(i / 4) + 1)
+                        .style("text-align", "center")
+                        .style("font-size", "15px")
+                        .style("color", "white")
+                        .style("font-family", "Poppins");
+
+                });
+    
+                            
+                        //var slider = d3
+                        var slider = d3
+                            .sliderHorizontal()
+                            .min(2000)
+                            .max(2020)
+                            .step(1)
+                            .width(1000)
+                            .tickFormat(d3.format(""))  // Format the ticks as integers	
+                            .displayValue(false)
+                            .on('onchange', (val) => {
+                            updateSVGs(String(Math.round(val)));
+                            d3.select('#value').text(val);
+                            });
+    
+                        d3.select('#slider')
+                            .append('svg')
+                            .attr('width', 1500)
+                            .attr('height', 100)
+                            .append('g')
+                            .attr('transform', 'translate(30,30)')
+                            .call(slider);
+    
+                    console.log("slider", slider);
+                     console.log(forestLossData);     
+                     
+                
+            });
+        }); 
+    
+    </script>
+    
+<body>
+</body>
+</html>

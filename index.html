@@ -39,20 +39,25 @@
 
 <!-- Libaries Loaded -->
     <!-- D3 -->
+
+    <!-- 
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script> 
+    -->
 
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 
-    <script src="https://d3.v7.js"></script>
-    <script src="https://d3-simple-slider.js"></script>
-
+    
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
 
-<script> src="d3.min.js"</script>
+
+        <!-- D3 Slider -->
+        <script> src="/d3.min.js"</script>
+        <script src="https://d3-simple-slider.js"></script>
+  
 
     <!-- W3 -->
     <script src="https://www.w3schools.com/lib/w3.js"></script>
@@ -214,13 +219,13 @@
     <div class="tooltip"></div>
 
 
-<body>
 
     <!--Vue.js: Nuxt-U - Button -->
     <template>
     <UButton color="white" variant="ghost">Button</UButton>
     </template>
     
+    <body>
     <!--JS Script-->
     <script>
     // -------------------------------------- Div 1:: id: Mp1_Atlas----------------------------------------------
@@ -932,151 +937,176 @@ legend.addTo(map);
 
 <!-- ------------------------------------ start of script for Div 5:Sea_FrstandDev -------------------------------------------- -->
    
-   <!--
-    <div id="Div5:Sea_FrstandDev" style="width: 100%; display: flex; justify-content: space-around; margin:50px; margin-top:  300px;">
-    <div id="Div5:Sea_FrstandDev" style="width: 100%; display: flex; justify-content: space-around; margin:50px; margin-top:  300px;">
-    -->
-        <div id="Div5_Sea_FrstandDev" style="width: 80%; display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 20px; justify-content: space-around; margin:50px; margin-top: 300px; margin-bottom: 300px;">
+  
+        <div id="Div5_Sea_FrstandDev" style="width: 80%; display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 20px; justify-content: space-around; margin:50px; margin-top: 300px; margin-bottom: 30px;">
         <!-- -------------------------------------- svgDv5 appends here -------------------------- -->
              </div>
 
-    
+             <p id="value"></p>
+
+         
+             <div id="slider">
+                <!-- appends slider here -->
+             </div>
+         
+
+                   <!-- ----------------- Commence script: Countries SVG to change colours refelctive of tree loss by respective years  ------------------- -->
+             <script>
+             
+             
+                 let forestLossData
+                     d3.csv("https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_loss_in_primary_forests_2001_tropics_only__ha.csv")
+                         .then(data => {
+                             forestLossData = data.map(d => ({
+                                 iso: d.iso,
+                                 year_f: d.umd_tree_cover_loss__year,
+                                 treeloss: +d.umd_tree_cover_loss__ha,
+                             }));
+                 
+                     // Process the data
+                     const forestLossByCountryAndYear = d3.group(forestLossData, d => d.iso, d => d.year_f, d => d.treeloss);
+             
+                    /* const forestLossByCountryAndYear = d3.rollup(forestLossData, 
+                         v => d3.sum(v, leaf => leaf.treeloss),  // Sum the tree loss values for each group
+                         d => d.iso,  // Group by country
+                         d => d.year_f  // Then by year
+                     );
+                     */
+                     
+                     // Create color scale for forest density
+                     const forestLossValues = data.map(d => d.treeloss);
+                     const colorScale = d3.scaleSequential(d3.interpolateGreens)
+                         .domain(d3.extent(forestLossValues));
+                 
+                     //create container for button
+                     const container = d3.select("#Div5_Sea_FrstandDev");
+                 
+                     fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson')
+                         .then(response => response.json())
+                         .then(MapDataDv5 => {
+                             // Filter to include only Southeast Asian countries
+                             const countryDv5 = MapDataDv5.features.filter(function(d) {   
+                                 return ["IDN", "MYS", "PHL", "THA", "BRN", "VNM", "LAO", "MMR", "KHM", "TLS", "SGP"]
+                                             .includes(d.properties.id);
+                             });
+             
+                             /*
+             
+                                 // function to update the SVGs
+                                 function updateSVGs(year) {
+                                     d3.selectAll("svg").selectAll("path")
+                                         .attr("fill", d => {
+                                             const forestDensity = forestDensityByCountryAndYear.get(country.properties.id)?.get(year);
+                                             return colorScale(forestDensity);
+                                         });
+                                 }
+                             */
+             
+                             // function to update the SVGs
+             
+                                 function updateSVGs(year) {
+
+                                     d3.select("#Div5_Sea_FrstandDev").selectAll("svg").each(function() {
+                                     const svg = d3.select(this);
+             
+                                 const countryId = svg.attr("id")?.replace(/_/g, " ");
+                                     svg.selectAll("path")
+                                         .attr("fill", d => {
+                                                 //const forestLossData = forestLossByCountryAndYear.get(d.iso)?.get(d.umd_tree_cover_loss__year).get(d.umd_tree_cover_loss__ha);
+                                                 //const forestDensity = forestLossByCountryAndYear.get(countryId)?.get(year);
+                                             
+                                                 //return colorScale(forestDensity);
+             
+                                                 //const forestLoss = forestLossByCountryAndYear.get(countryId)?.get(year);
+                                                 //return colorScale(forestLoss);
+             
+                                                 //const forestLoss = forestLossByCountryAndYear.get(countryId)?.treeloss;
+                                                 const forestLoss = forestLossByCountryAndYear.get(countryId)?.get(year)?.get("treeloss"); //getting treeloss form the third nest - just cant figure out what format it wants..(??????)
+
+                                                 return forestLoss !== undefined ? colorScale(forestLoss) : "white";  // Default color if undefined
+                                                 return colorScale(forestLoss); 
+             
+             
+                                             });
+                                     });
+                                 }
+                 
+                             // Create a SVG for each country
+                             countryDv5.forEach((country, i) => {
+                                 const svg = container.append("svg")
+                                     .attr("width", 200)
+                                     .attr("height", 200)
+                                     .attr("fill", "gray")
+                                     .attr("id", country.properties.id.replace(/\s/g, "_"))  // Assign an id to the SVG
+                                     .style("grid-column", (i % 4) + 1)
+                                     .style("grid-row", Math.floor(i / 4) + 1);
+                 
+                                 // Create a projection that fits the country within the SVG
+                                 const projection = d3.geoMercator().fitSize([200, 200], country);
+                                 const path = d3.geoPath().projection(projection);
+                 
+                                 svg.append("path")
+                                     .attr("d", path(country))
+                                     
+                                     .attr("fill", d => {
+                                         const forestLoss = forestLossByCountryAndYear.get(country.properties.id)?.get('2000');
+                                         return colorScale(forestLoss);
+                                         return forestLoss === undefined ? "white" : colorScale(forestLoss);
+                                     })
+                                     //.attr("stroke", "white")
+                                     //.attr("stroke-width", 0.5)
+                                     .attr("opacity", 0.8);
+             
+                        
+                                 
+                 
+                                 // Append country name as a label under the SVG
+                                 container.append("div")
+                                     .text(country.properties.name)
+                                     .style("grid-column", (i % 4) + 1)
+                                     .style("grid-row", Math.floor(i / 4) + 1)
+                                     .style("text-align", "center")
+                                     .style("font-size", "15px")
+                                     .style("color", "white")
+                                     .style("font-family", "Poppins");
+             
+                             });
+                 
+                               // Create a slider
+                                     //var slider = d3
+                                     var slider = d3
+                                         .sliderHorizontal()
+                                         .min(2000)
+                                         .max(2020)
+                                         .step(1)
+                                         .width(1000)
+                                         .tickFormat(d3.format(""))  // Format the ticks as integers	
+                                         .displayValue(false)
+                                         .on('onchange', (val) => {
+                                         updateSVGs(String(Math.round(val)));
+                                         d3.select('#value').text(val);
+                                         });
+                                   
+                 
+                                     d3.select('#slider')
+                                         .append('svg')
+                                         .attr('width', 1500)
+                                         .attr('height', 100)
+                                         .append('g')
+                                         .attr('transform', 'translate(30,30)')
+                                         .call(slider);
+                                  
+                 
+                                 console.log("slider", updateSVGs);
+                                  console.log(forestLossData);     
+                                  
+                             
+                         });
+                     }); 
+                 
+                 </script>
 
    
- <div id="Div5_Sea_FrstandDev" style="width: 80%; display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 20px; justify-content: space-around; margin:50px; margin-top: 300px; margin-bottom: 2px;">
-    <!-- -------------------------------------- svgDv5 appends here -------------------------- -->
-         </div>
-<p id="value"></p>
-<div id="slider"></div>
-
-<script>
-// Load the forest density and HDI data
-Promise.all([
-    d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/global%20tree%20watch/Global%20annual%20tree%20cover%20loss%20by%20dominant%20driver/treecover_loss_in_primary_forests_2001_tropics_only__ha.csv'),
-    d3.csv('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/Our%20Wolrd%20Data_HUman%20Index/human-development-index.csv')
-]).then(([forestData, hdiData]) => {
-    // Process the data
-    const forestDensityByCountryAndYear = d3.group(forestData, d => d.iso, d => d.umd_tree_cover_loss__year);
-    const hdiByCountryAndYear = d3.group(hdiData, d => d.Entity, d => d.Year);
-
-    // Create color scale for forest density
-    const forestDensityValues = forestData.map(d => +d.umd_tree_cover_loss__ha);
-    const colorScale = d3.scaleSequential(d3.interpolateGreens)
-        .domain(d3.extent(forestDensityValues));
-
-    //create container for button
-    const container = d3.select("#Div5_Sea_FrstandDev");
-
-    fetch('https://raw.githubusercontent.com/sarahtuke/HASS-assignment-5.2/main/data%20src/world_forest.geojson')
-        .then(response => response.json())
-        .then(MapDataDv5 => {
-            // Filter to include only Southeast Asian countries
-            const countryDv5 = MapDataDv5.features.filter(function(d) {   
-                return ["IDN", "MYS", "PHL", "THA", "BRN", "VNM", "LAO", "MMR", "KHM", "TLS", "SGP"]
-                            .includes(d.properties.id);
-            });
-
-            // Create a SVG for each country
-            countryDv5.forEach((country, i) => {
-                const svg = container.append("svg")
-                    .attr("width", 200)
-                    .attr("height", 200)
-                    .attr("id", country.properties.id.replace(/\s/g, "_"))  // Assign an id to the SVG
-                    .style("grid-column", (i % 4) + 1)
-                    .style("grid-row", Math.floor(i / 4) + 1);
-
-                // Create a projection that fits the country within the SVG
-                const projection = d3.geoMercator().fitSize([200, 200], country);
-                const path = d3.geoPath().projection(projection);
-
-                svg.append("path")
-                    .attr("d", path(country))
-                    .attr("fill", d => {
-                        const forestDensity = forestDensityByCountryAndYear.get(country.properties.id)?.get('2000');
-                        return colorScale(forestDensity);
-                    })
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 0.5)
-                    .attr("opacity", 0.8)
-                    .on("mouseover", function() {
-                        const hdi = hdiByCountryAndYear.get(country.properties.name)?.get('2000');
-                        d3.select(this).append("title").text(`HDI: ${hdi}`);
-                    });
-          
-
-                // Append country name as a label under the SVG
-                container.append("div")
-                    .text(country.properties.name)
-                    .style("grid-column", (i % 4) + 1)
-                    .style("grid-row", Math.floor(i / 4) + 1)
-                    .style("text-align", "center")
-                    .style("font-size", "10px")
-                    .style("color", "white");
-
-                // Append an element for the HDI text
-                svg.append("text")
-                    .attr("class", "hdi-text")
-                    .attr("x", 100)  // Adjust the x and y coordinates as needed
-                    .attr("y", 100)
-                    .style("fill", "red")  // Change the color to red
-                    .style("font-size", "20px")  // Change the font size to 14px
-                    .style("font-family", "Poppins");  // Change the font to Arial
-            });
-
-           /* // Function to update the HDI text and forest density color
-            function updateHDI(year) {
-                countryDv5.forEach(country => {
-                    const hdi = hdiByCountryAndYear.get(country.properties.name)?.get(year);
-                    const forestDensity = forestDensityByCountryAndYear.get(country.properties.id)?.get(year) || 0;
-                    const svg = d3.select(`#${country.properties.id.replace(/\s/g, "_")}`);
-                    svg.select(".hdi-text").text(`${hdi}`).style("fill", "red");
-                    svg.select("path").attr("fill", colorScale(forestDensity));
-                });
-            }
-            */
-          
-                /// Function to update the HDI text and forest density color
-            function updateHDI(year) {
-                countryDv5.forEach(country => {
-                    const hdiRows = hdiByCountryAndYear.get(country.properties.name)?.get(String(year));
-                    const hdi = hdiRows ? hdiRows[0].HDI : null;  // Get the HDI value from the first data row
-                    const forestDensityRows = forestDensityByCountryAndYear.get(country.properties.id)?.get(String(year));
-                    const forestDensity = forestDensityRows ? +forestDensityRows[0].umd_tree_cover_loss__ha || 0 : 0;  // Get the forest density value from the first data row
-                    const svg = d3.select(`#${country.properties.id.replace(/\s/g, "_")}`);
-                    svg.select(".hdi-text").text(`HDI: ${hdi}`).style("fill", "red");
-                    svg.select("path").attr("fill", colorScale(forestDensity));
-                });
-            }
-            
-                        
-                    var slider = d3
-                        .sliderHorizontal()
-                        .min(2000)
-                        .max(2020)
-                        .step(1)
-                        .width(1000)
-                        .tickFormat(d3.format(""))  // Add this line to format the ticks as integers	
-                        .displayValue(false)
-                        .on('onchange', (val) => {
-                        updateHDI(String(Math.round(val)));
-                        d3.select('#value').text(val);
-                        });
-
-                    d3.select('#slider')
-                        .append('svg')
-                        .attr('width', 1500)
-                        .attr('height', 100)
-                        .append('g')
-                        .attr('transform', 'translate(30,30)')
-                        .call(slider);
-
-                console.log("slider", slider);
-                console.log(updateHDI);
-                 
-            
-        });
-});
-</script>
 
 <script>
     /*
