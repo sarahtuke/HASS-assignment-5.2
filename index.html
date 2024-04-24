@@ -247,11 +247,21 @@
           <!-----Welcome Text -->
 
         <div id="map"></div> <!-- The Leaflet map container -->
-        <div id="text-overlay">Overlay Text: Information Here</div> <!-- Your text over the map -->
+        <div id="text-overlay">FORESTS AT SEA</div> <!-- Text overlay -->
 
 
         <body>
             <!-- Your HTML code -->
+            <div class="scrolling-text">
+                
+                <p style="color: #7693d1; font-size: 25px;" >Welcome to <b>Forests at SEA!</b>
+                    A page navigating through the forests of Southeast Asia to understand the mechanisms of deforestation in this regions Archipelagos.
+                <em><b>Click a country for more info</em></b>
+            <br>
+            </p>
+            </div>
+
+
             <div class="scrolling-text">
             <p  style="color: #354b79;">Malay Archipelago &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Riau Archipelago &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Maritime Southeast Asia &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Indonesian Archipelago &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;Nusantara &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;East Indies &nbsp;&nbsp;&nbsp;* &nbsp;&nbsp;&nbsp;</p>
             </div>
@@ -627,7 +637,7 @@ legend.addTo(map);
     console.log('Before conversion:', data.map(d => d.umd_tree_cover_loss_ha));
     const totalLoss = d3.sum(data, d => {
         const loss = +d.umd_tree_cover_loss_ha;
-        console.log('After conversion:', loss);
+        //console.log('After conversion:', loss);
         return loss;
     });
     return {
@@ -636,7 +646,7 @@ legend.addTo(map);
             };
         });
 
-        console.log(totalLossByYear);
+        //console.log("Tree Loss by Year", totalLossByYear);
 
     
     /*    // Filter the data to include only Southeast Asian countries
@@ -731,48 +741,70 @@ legend.addTo(map);
         
         </Script>
 
+
          <!-- Text -->
-        <div id="Dv2_TropicalForests_txtleft" style="display: flex; width: 500px; height: 200px; margin: 50px; text-justify: distribute-all-lines;">
-            <body_txt>
-                
+         <div id="Dv2_TropicalForests" class="w3-row w3-container">
+             <!-- Text appeneds here -->
+         </div> 
 
-                <p id="body_txt">In the 2 decades between 2000 and 2020, Southease Asia lost X% of its foests</p>
-                <br>
-                <br>
-                <p id="body_txt">So why does this matter?</p>
-                <br>
-                <br>
-                <p id="body_txt">Tropical forests are home to a wide variety of plant and animal species. 
-                    They are also important for the global climate system, as they store large amounts of carbon 
-                    and help regulate the Earth's temperature. However, tropical forests are under threat from deforestation, 
-                    which is driven by factors such as agriculture, logging, and mining. Protecting tropical forests is essential
-                     for biodiversity conservation and climate change mitigation.</p>
-                
-        </div>
-        <div id="Dv2_TropicalForests_txtright" style="height: 200px; margin: 50px; text-align: right;">
-                <br>
-                <br>
-                <p id="body_txt" class="w3-left">Between 2021 and 2020, Southeast Asia saw net emissions of:</p>
-                <br>
-                <p id="catch_txt">`${netLossPercentage}%`<br></p>
 
-            </body_txt>
-        </div>
-        
-        
-        <div id="Dv2_TropicalForests_Map" style="width: 90%; height: 200px; margin: 50px auto;">
+            <!--
+            <div id="Dv2_TropicalForests_txtleft" style="display: flex; width: 500px; height: 200px; margin: 50px; text-justify: distribute-all-lines;">
+             -->  
+            
+             <div id="Dv2_TropicalForests" class="w3-row">
+                <div class="w3-col s6 w3-left">
+
+                    <p id="body_txt"  style = "font-size: 25px;">In just over two decades between 2001 and 2023, the rate of annual deforestation rate has increased by 447 Kha in Southeast Asia.</p>
+                    <br>
+                    <br>
+                    <p id="body_txt" style=" color: crimson; font-size: 50px;"><b>So why does this matter?</b></p>
+                    <br>
+                    <br>
+              
+
+                </div>   
+            </div>
+            <!-- 
+            <div id="Dv2_TropicalForests_txtright" style="height: 200px; margin: 50px; text-align: right;">
+                -->
+
+            <div id="Dv2_TropicalForests" class="w3-row"> 
+                <div class="w3-col s6 w3-right">
+
+                    <p id="body_txt" class="w3-left" style = "font-size: 25px;">that is an increase in </p>
+                    <br>
+                    <p id="catch_txt" style=" color: rgb(2, 152, 10); font-size: 50px;"><b>3.5x yearly</b><br></p>
+                    <br>
+                    <p id="body_txt" class="w3-left" style = "font-size: 25px;"><em>Meaning within two decades we have lost over 35% of Cambodia's national area in deforestation</em></p>
+                    
+                </div>    
+            </div>
+   
+      <!-- parent div: Map -->
+    <div style="display: flex; justify-content: space-between;">
+  
+       <!-- child div --> 
+        <div id="Dv2_TropicalForests_Map" style="width: 50%; height: 2000px; margin: 10px auto;">
             <!-- The SVG will be appended here -->
         </div>
+
 
         <script>
   
     let svg_dv2 = d3.select("#Dv2_TropicalForests_Map")
     .append("svg")
         //.attr("viewBox", "0 0 " + 1000 + " " + 1000)
-        .attr("width", 1400)
-        .attr("height", 900)
+        .attr("width", 3000)
+        .attr("height", 2000)
 
-    // Tropical Forests Graph 
+    
+    
+        // Define the tooltip variable to select the tooltip element
+     let tooltip = d3.select(".tooltip");
+
+    
+     // Tropical Forests Graph 
 
         // Load the data
         Promise.all([
@@ -782,8 +814,10 @@ legend.addTo(map);
 
             // Create a projection and path generator
             let projection = d3.geoMercator()
-                .center([103, 1])
-                .fitExtent([[20, 20], [980, 580]], geojson);
+                //.center([103, 1])
+                .scale(400)
+                .translate([1500, 1500])
+                //.fitExtent([[20, 20], [980, 580]], geojson);
 
           
             let geopath = d3.geoPath().projection(projection);
@@ -816,22 +850,118 @@ legend.addTo(map);
                 .attr("cy", d => projection([+d.x, +d.y])[1])
                 .attr("r", d => sizeScale(+d.net))
                 .attr("fill", "red")
-                .attr("opacity", 0.4);
+                .attr("opacity", 1.2)
+               
+
+
+        // Event handlers: update tooltip relative to mouse pointer
+        //turning on the mouuse-over fucntion
+        .on("mouseover", (event, d) => {
+            const centroid = geopath.centroid(d);
+            const [x, y] = centroid;
+            
+
+        d3.select(event.currentTarget)
+        .classed("highlighted", true)
+        //.attr("transform",`translate(${x * (1 - scale)}, ${y * (1- scale)}) scale(${scale}, ${scale})`)
+        .raise(); // Raise section above projection
+
+
+        //making the mouse-over function link to the tooltip
+        //d3.select(".tooltip")
+        tooltip.style("opacity", 1)
+            .html(
+            `<strong>Net Emissions: ${d.emissions.toLocaleString()} eCo2</strong>
+            <br>
+            Net Removals: ${d.removals.toLocaleString()} eCo2`)
+
+            .style("display", "block")
+            .style("left", event.pageX + 60 + "px")
+            .style("top", event.pageY - 60 + "px");
+            })
+            .on("mouseout", (event, d) => {
+                d3.select(event.currentTarget)
+                .classed("highlighted", false)
+                .attr("transform", "translate(0, 0) scale(1, 1)");
+
+                d3.select(".tooltip").style("display", "none");
 
                
-    });
+             });
+        
+    })// end data fetch
     /////////////////////////////////////////////end of script for Div 2
 
 
-    </script>
+    </script> <!-- endchild div 1 -->
+
+    <!-- child div -->
+
+    <div id="EmissionMapText" style="Width: 100%; margin: 50px; text-align: left; color: white; font-size: 24px; margin-top: 100px;">
+        <p>
+            The decade between 2001 to 2021, this was the recorded net removals and net emissions stemming from tropical forests
+            <br>
+            <br>
+            <b style = "color: green "> Amazon rainforest </b> = 1 Gt Emissions - 1.2 Gt Removals = <b>0.1 Gt C02e net removals</b>
+            <br>
+            <br>
+            <b style = "color: green "> Congo Basin </b> = 0.53 GT Emissions - 1.1 GT removals = <b>0.61 GT CO2e net removals</b>
+            <br>
+            <br> 
+            <b style="color: green;">Southeast Asia</b> = 1.6 GT Emissions - 1.1 GT removals = <b style="color: crimson;">0.49 Gt CO2e net emissions</b>
+
+
+        </P> 
+
+        </div> <!-- end child div 2 -->
+
+    </div> <!-- end parent div -->
+
 </body>
+
+<div style="Width: 100%; margin: 50px; text-align: left; color: white; font-size: 24px; margin-top: 100px;">
+    <p>
+        There are only three congregations of tropical forests in the world: 
+        <br>
+        <br>
+        <br>
+        Amazon of South America -  DRC - Central Africa  And Southeast Asia
+        <br>
+        <br>
+        <br>
+        These tropical forests concetnrated around the equaror make up 45% of the worlds total forests. <b>These forests are the richest in biodiversity and store the largest amount of carbon.</b> The carbon density of tropical rain forests is twice as high as these in other regions.
+        <br>
+        <br>
+        <br>
+        <b>
+            So SEA is hitting net emissions rather than removals, not only is it unpleasant and dangerous for the region, but it is problematic for our planetary ecosystem. 
+        </b>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <b style="font-size: 50px; color: crimson;" class="w3-center">So why is deforestation happening in tropical regions?</b>
+
+
+
+
+    </p>
+
+</div>
 
 
 
 <body>
       <!-- ------------------------------------ start of script for Div 3 -------------------------------------------- -->
       
-   <div id="div3_deforestCommodity" style="width: 100%; height: 400px; display: flex; justify-content: space-around; margin-top: 300px;">
+   <!--
+      <div id="div3_deforestCommodity" style="width: 100%;  display: flex; justify-content: space-around; margin-top: 300px;">
+         <div id="div3_deforestCommodity" style="width: 100%;  display: flex;">
+    -->
+
+    <div id="div3_deforestCommodity" style="width: 100%;  display: flex; justify-content: space-around; margin-top: 300px;">
                                 <!-- ------------- svg appends here -------------------------- -->
     </div>
 
@@ -840,7 +970,12 @@ legend.addTo(map);
     // The Deforestation by commodity data
         // Defining SVG Size
         let svg = d3.select("#div3_deforestCommodity").append("svg")
-            .attr("viewBox", [-width / 2, -height / 2, width, height]);
+            //.attr("viewBox", [-width / 2, -height / 2, width, height])
+            //.viewBox="-500,-300,1000,600"
+
+            .attr("height", 1000, "width", 1000)
+            .viewBox="0,0,2000,600"
+
             //.attr("width", 900)
             //.attr("height", 1400);
 
@@ -852,6 +987,7 @@ legend.addTo(map);
 
             // Group the data by region and sum the shares for each driver
             const dataByRegion = d3.group(data, d => d.region);
+            //const dataByRegion = d.region
 
             // Create a pie generator
             const pie = d3.pie()
@@ -860,7 +996,14 @@ legend.addTo(map);
             // Create an arc generator
             const arc = d3.arc()
                 .innerRadius(50)
-                .outerRadius(Math.min(width, height) / 5 - 55);
+                //.innerRadius(0)
+
+                //.outerRadius(Math.min(width, height) / 5 - 55);
+                //.outerRadius(Math.min(1000, 1000) / 5 - 55);
+                .outerRadius(Math.min(1000, 1000) / 5 - 55);
+
+                //.outerRadius(Math.min(1000, 1000) /2);
+                //.outerRadius(200);
 
             
 
@@ -881,7 +1024,8 @@ legend.addTo(map);
             // For each region, bind the data to path elements and set their attribute using the arc generator
             dataByRegion.forEach((value, key) => {
                 const svg = d3.select("#div3_deforestCommodity").append("svg")
-                    .attr("viewBox", [-width / 2, -height / 2, width, height]);
+                    //.attr("viewBox", [-width / 2, -height / 2, width, height])
+                    .attr("height", 1000, "width", 1000);
 
                 svg.append("g")
                     .attr("stroke", "white")
@@ -891,7 +1035,9 @@ legend.addTo(map);
                     .attr("fill", d => color(d.data.driver))
                     .attr("d", arc)
                     .append("title")
-                    .text(d => `${d.data.driver}: ${d.data.share.toLocaleString()}`);
+                    .text(d => `${d.data.driver}: ${d.data.share.toLocaleString()}`)
+                    //.style("font-size", "24px")
+                    //.style("font-color", "white");
            
 
             var key = data.map(d =>d.region);
@@ -901,8 +1047,9 @@ legend.addTo(map);
                 .attr("x", width / 2)
                 .attr("y", 20)
                 .attr("text-anchor", "middle")
-                .style("font-size", "16px")
+                .style("font-size", "50px")
                 .style("text-decoration", "underline")
+                .style("font-color", "white")
                 .text(key);
 
             svg.append("g")
@@ -913,14 +1060,20 @@ legend.addTo(map);
                 .attr("fill", d => color(d.data.driver))
                 .attr("d", arc)
                 .append("title")
-                .text(d => `${d.data.driver}: ${d.data.share.toLocaleString()}`);  
+                .text(d => `${d.data.driver}: ${d.data.share.toLocaleString()}`)
+                //.style("font-size", "24px")
+                //.style("font-color", "white")  
+                console.log(data.driver)
+                console.log(data.share)
 
-        });
+        }); 
 
         // Add a legend
             const legend = d3.select("#div3_deforestCommodity").append("div")
                 .attr("class", "legend")
-                .style("margin-top", "20px");
+                .style("margin-top", "20px")
+                .style("color", "white")
+                .style("font-size", "24px")
 
             legend.selectAll("div")
                 .data(color.domain())
